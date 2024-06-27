@@ -1,4 +1,5 @@
 package com.example.apppicodeorousuario;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -39,21 +40,21 @@ public class Pantalla4Envio extends AppCompatActivity {
         // Configurar el botón Agregar para añadir elementos (si es necesario)
         Button btnAgregar = findViewById(R.id.btnAgregar);
         btnAgregar.setOnClickListener(v -> {
-            // Aquí puedes implementar la lógica para agregar nuevos elementos a la lista
-            // Puedes abrir otra actividad o fragmento para agregar nuevos elementos
+            finish(); //Actualiza la actividad de esta pantalla y vulve a la anterior
         });
 
-        // Configurar el botón Enviar para enviar el pedido (si es necesario)
+        //Cuando se precione el boton Enviar se enviará todos los datos que se almaceno en el objeto pedido directo a la Base de datos-------------------------------
         Button btnEnviar = findViewById(R.id.btnEnviar);
         btnEnviar.setOnClickListener(v -> {
-            // Aquí puedes implementar la lógica para enviar el pedido
-            // Por ejemplo, enviar datos a través de una API o realizar alguna acción final
+            pedido.almacenarPedido(pedido);
+
         });
 
         // Configurar el botón Cancelar para cancelar la operación (si es necesario)
         Button btnCancelar = findViewById(R.id.btnCancelar);
         btnCancelar.setOnClickListener(v -> {
-            // Aquí puedes implementar la lógica para cancelar y volver atrás
+           pedido = pedido.cancelarPedido(pedido);
+
             finish(); // Finaliza la actividad actual y vuelve a la anterior
         });
     }

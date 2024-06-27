@@ -13,7 +13,7 @@ public class Pantalla2Mesas extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pantalla2_mesas);
-        //pedido = getIntent().getParcelableExtra("pedido");
+        pedido = getIntent().getParcelableExtra("pedido");
     }
 
 }

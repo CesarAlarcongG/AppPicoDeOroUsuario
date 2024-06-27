@@ -4,7 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Menu implements Parcelable {
+
+    private int idMenu;
     private String nombre;
+
+    private int cantidad;
     private double precio;
 
     // Constructor, getters, and setters
@@ -48,5 +52,29 @@ public class Menu implements Parcelable {
 
     public double getPrecio() {
         return precio;
+    }
+
+    public int getIdMenu() {
+        return idMenu;
+    }
+
+    public void setIdMenu(int idMenu) {
+        this.idMenu = idMenu;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
     }
 }
