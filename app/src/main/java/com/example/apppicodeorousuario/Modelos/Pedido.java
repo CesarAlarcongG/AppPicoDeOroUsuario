@@ -1,74 +1,37 @@
 package com.example.apppicodeorousuario.Modelos;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import androidx.annotation.NonNull;
+
 import com.example.apppicodeorousuario.Config.ConexionBD;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.*;
+import java.time.LocalDateTime;
 
-public class Pedido implements Parcelable {
+
+public class Pedido {
 
     private int idPedido;
+    /*Estados
+    * 1. NuevoPedido
+    * 2. Cocinandoce
+    * 3. Entregado
+    * 4. Pagado
+    * 5. Cancelado
+    * */
     private int idEstadoPedido;
-    private List<Menu> menu;
-    private Mesa mesa;
-
-    // Constructor, getters, and setters
+    private LocalDateTime fechaHoraInicio;
+    private int idMesa;
 
 
-    public Mesa getMesa() {
-        return mesa;
+    // Getters y setters---------------------------------------------------------------------
+    public int getIdPedido() {
+        return idPedido;
     }
 
-    public void setMesa(Mesa mesa) {
-        this.mesa = mesa;
+    public void setIdPedido(int idPedido) {
+        this.idPedido = idPedido;
     }
 
-    public Pedido() {
-        this.menu = new ArrayList<>();
-    }
-
-    protected Pedido(Parcel in) {
-        menu = in.createTypedArrayList(Menu.CREATOR);
-    }
-
-    public static final Creator<Pedido> CREATOR = new Creator<Pedido>() {
-        @Override
-        public Pedido createFromParcel(Parcel in) {
-            return new Pedido(in);
-        }
-
-        @Override
-        public Pedido[] newArray(int size) {
-            return new Pedido[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(menu);
-    }
-
-    public List<Menu> getMenu() {
-        return menu;
-    }
-
-    public void setMenu(List<Menu> menu) {
-        this.menu = menu;
-    }
-
-    public  int getIdEstadoPedido() {
+    public int getIdEstadoPedido() {
         return idEstadoPedido;
     }
 
@@ -76,16 +39,45 @@ public class Pedido implements Parcelable {
         this.idEstadoPedido = idEstadoPedido;
     }
 
-    public int getIdPedido() {
-        return idPedido;
-    }
-    public void setIdPedido(int idPedido) {
-        this.idPedido = idPedido;
+    public int getIdMesa() {
+        return idMesa;
     }
 
+    public void setIdMesa(int idMesa) {
+        this.idMesa = idMesa;
+    }
 
-    //Método que genera un nuevo id-----------------------------------------------------------------------------------------------------------------
-    public void generarNuevoId(Pedido pedido){
+//Pantalla1***********************************************************************************************************
+
+    //Método que genera un nuevo Pedido
+    public void iniciarPedido(){
+        generarNuevoId();
+        try{
+            //Obtenemos la fecha y hora exacta
+            LocalDateTime fechaHora1 = LocalDateTime.now();
+            String fechaHora = String.valueOf(fechaHora1);
+
+            Connection connection = new ConexionBD().getConnection();
+            String sql = "INSERT INTO Pedido (idPedido, idEstadoPedido, fecha_hora) VALUES (?, ?, ?);";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setInt(1, idPedido);
+            preparedStatement.setInt(2, 1);
+            preparedStatement.setTimestamp(3, Timestamp.valueOf(fechaHora) );
+
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            resultSet.close();
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void generarNuevoId(){
 
         try{
             Connection connection = new ConexionBD().getConnection();
@@ -94,10 +86,10 @@ public class Pedido implements Parcelable {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if(resultSet.next()) {
-               pedido.setIdPedido(resultSet.getInt("idPedido") + 1);
+               idPedido = resultSet.getInt("idPedido") + 1;
 
             }else{
-                pedido.setIdPedido(1);
+                idPedido=1;
             }
 
             resultSet.close();
@@ -110,67 +102,25 @@ public class Pedido implements Parcelable {
 
 
 
-
-    //Método que envia todos los datos a la base de datos -----------------------------------------------------------------------------------------
-    public void almacenarPedido(Pedido pedido){
-        almacenarMenu(pedido);
+//Pantalla4***********************************************************************************************************
+    public void cancelarPedido() {
         try{
-            Mesa mesa = pedido.getMesa();
-
             Connection connection = new ConexionBD().getConnection();
-            String sql = "INSERT INTO Pedido (idPedido, idEstadoPedido, idMesa) VALUES (?, ?, ?);";
+            String sql = "UPDATE Pedido SET idEstadoPedido = ? WHERE idPedido = ?;";
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
-            preparedStatement.setInt(1, pedido.getIdPedido());
-            preparedStatement.setInt(2, pedido.getIdEstadoPedido());
-            preparedStatement.setInt(3, mesa.getIdMesa());
+            preparedStatement.setInt(1, 5);
+            preparedStatement.setInt(2, idPedido);
 
             ResultSet resultSet = preparedStatement.executeQuery();
-
             resultSet.close();
             preparedStatement.close();
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
-    }
-    private void almacenarMenu(Pedido pedido){
-        try{
-            List<Menu> menu = pedido.getMenu();
-            int idPedido = pedido.getIdPedido();
 
-            Connection connection = new ConexionBD().getConnection();
-            for (int i = 0; i<menu.size();i++){
-                Menu menuEnviar = menu.get(i);
-
-                String sql = "INSERT INTO DetallePedido (idPedido, idMenu, cantidad, costo) VALUES (?, ?, ?, ?, ?);";
-
-                PreparedStatement preparedStatement = connection.prepareStatement(sql);
-
-                preparedStatement.setInt(1, idPedido);
-                preparedStatement.setInt(2, menuEnviar.getIdMenu());
-                preparedStatement.setInt(3, menuEnviar.getCantidad());
-                preparedStatement.setDouble(4, menuEnviar.getPrecio());
-
-                ResultSet resultSet = preparedStatement.executeQuery();
-
-                resultSet.close();
-                preparedStatement.close();
-            }
-
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-    //Cancelar Pedido --------------------------------------------------------------------------------------------------
-    public Pedido cancelarPedido(Pedido pedido){
-        pedido = null;
-        return pedido;
     }
 
 }

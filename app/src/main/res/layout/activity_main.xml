@@ -8,21 +8,24 @@
         tools:context=".MainActivity">
     <Button
             android:id="@+id/btnIniciarPedido"
-            android:text="Button"
+            android:text="INICIAR PEDIDO"
+            android:textColor="@color/black"
+            android:textSize="30sp"
             android:layout_width="422dp"
             android:layout_height="73dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_bias="0.779"/>
+            app:layout_constraintVertical_bias="0.779"
+            android:backgroundTint="@color/amarillo"/>
     <ImageView
-            android:layout_width="465dp"
-            android:layout_height="289dp"
-            tools:srcCompat="@tools:sample/avatars"
+            android:layout_width="634dp"
+            android:layout_height="428dp"
+            tools:srcCompat="@mipmap/img_pantalla1_logo"
             android:id="@+id/imageView"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="132dp"/>
+            android:layout_marginTop="76dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

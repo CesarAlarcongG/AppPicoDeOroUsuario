@@ -7,14 +7,23 @@ public class Menu implements Parcelable {
 
     private int idMenu;
     private String nombre;
-
     private int cantidad;
     private double precio;
 
     // Constructor, getters, and setters
+    public Menu(){
 
-    public Menu(String nombre, double precio) {
+    }
+    public Menu(int idMenu, String nombre, int cantidad,  double precio) {
+        this.idMenu = idMenu;
         this.nombre = nombre;
+        this.cantidad = cantidad;
+        this.precio = precio;
+    }
+    public Menu( String nombre,  double precio) {
+
+        this.nombre = nombre;
+
         this.precio = precio;
     }
 
